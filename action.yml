@@ -1,6 +1,6 @@
 name: Create Repository From Template
 description: A GitHub Action to create a new repository from a template repository using the GitHub API
-author: Louisiana Office of Technology Services
+author: Lee Lott
 
 inputs:
   repo-name:
