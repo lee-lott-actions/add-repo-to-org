@@ -1,0 +1,38 @@
+name: Create Repository From Template
+description: A GitHub Action to create a new repository from a template repository using the GitHub API
+author: Louisiana Office of Technology Services
+
+inputs:
+  repo-name:
+    description: 'The name of the new repository to create'
+    required: true
+  repo-description:
+    description: 'The description for the new repository'
+    required: true
+  template-repo:
+    description: 'The name of the template repository to use'
+    required: true
+  owner:
+    description: 'The owner of the template and new repository (user or organization)'
+    required: true
+  token:
+    description: 'GitHub token with repository write access'
+    required: true
+
+outputs:
+  result:
+    description: 'Result of the repository creation ("success" or "failure")'
+    value: ${{ steps.action.outputs.result }}
+  error-message:
+    description: 'Error message if the repository creation fails'
+    value: ${{ steps.action.outputs.error-message }}
+
+runs:
+  using: composite
+  steps:
+    - name: Create Repository From Template
+      id: action
+      run: |
+        source ${{ github.action_path }}/action.sh
+        create_repository "${{ inputs.repo-name }}" "${{ inputs.repo-description }}" "${{ inputs.template-repo }}" "${{ inputs.owner }}" "${{ inputs.token }}"
+      shell: bash
