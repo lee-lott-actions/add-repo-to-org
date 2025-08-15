@@ -42,7 +42,7 @@ This GitHub Action creates a new repository from a specified template repository
        steps:
          - name: Create Repository
            id: create-repo
-           uses: lee-lott-actions/create-repo-from-template@v1.0.2
+           uses: lee-lott-actions/create-repo-from-template@v1
            with:
              repo-name: 'new-repo'
              repo-description: 'A new repository created from a template'
