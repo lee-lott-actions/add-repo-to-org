@@ -32,7 +32,7 @@ runs:
   steps:
     - name: Create Repository From Template
       id: action
+      shell: pwsh
       run: |
-        source ${{ github.action_path }}/action.sh
-        create_repository "${{ inputs.repo-name }}" "${{ inputs.repo-description }}" "${{ inputs.template-repo }}" "${{ inputs.owner }}" "${{ inputs.token }}"
-      shell: bash
+        . "${{ github.action_path }}/action.ps1"
+        New-GitHubRepositoryFromTemplate "${{ inputs.repo-name }}" "${{ inputs.repo-description }}" "${{ inputs.template-repo }}" "${{ inputs.owner }}" "${{ inputs.token }}"
