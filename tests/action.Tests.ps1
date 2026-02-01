@@ -34,7 +34,7 @@ Describe "New-GitHubRepositoryFromTemplate" {
         New-GitHubRepositoryFromTemplate -RepoName $RepoName -RepoDescription $RepoDescription -TemplateRepo $TemplateRepo -Owner $Owner -Token $Token
         $output = Get-Content $env:GITHUB_OUTPUT
         $output | Should -Contain "result=failure"
-        $output | Should -Contain "error-message=Error: Failed to create repository $Owner/$RepoName\. HTTP Status: 422"
+        $output | Should -Contain "error-message=Error: Failed to create repository $Owner/$RepoName. HTTP Status: 422"
     }
 
     It "create_repository fails with empty repo_name" {
