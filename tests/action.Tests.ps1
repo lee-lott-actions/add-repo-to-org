@@ -34,7 +34,7 @@ Describe "New-GitHubRepositoryFromTemplate" {
         New-GitHubRepositoryFromTemplate -RepoName $RepoName -RepoDescription $RepoDescription -TemplateRepo $TemplateRepo -Owner $Owner -Token $Token
         $output = Get-Content $env:GITHUB_OUTPUT
         $output | Should -Contain "result=failure"
-        $output | Should -Contain "error-message=Failed to create repository: Repository creation failed"
+        $output | Should -Contain "error-message=Error: Failed to create repository $Owner/$RepoName\. HTTP Status: 422"
     }
 
     It "create_repository fails with empty repo_name" {
@@ -71,4 +71,17 @@ Describe "New-GitHubRepositoryFromTemplate" {
         $output | Should -Contain "result=failure"
         $output | Should -Contain "error-message=Missing required parameters: repo_name, repo_description, template_repo, owner, and token must be provided."
     }
+	
+	It "writes result=failure and error-message on exception" {
+		Mock Invoke-WebRequest { throw "API Error" }
+
+		try {
+			New-GitHubRepositoryFromTemplate -RepoName $RepoName -RepoDescription $RepoDescription -TemplateRepo $TemplateRepo -Owner $Owner -Token $Token
+		} catch {}
+
+		$output = Get-Content $env:GITHUB_OUTPUT
+		$output | Should -Contain "result=failure"
+		$output | Where-Object { $_ -match "^error-message=Error: Failed to create repository $Owner/$RepoName\. Exception:" } |
+			Should -Not -BeNullOrEmpty
+	}	
 }
