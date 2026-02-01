@@ -46,26 +46,15 @@ function New-GitHubRepositoryFromTemplate {
         if ($response.StatusCode -eq 201) {
             Add-Content -Path $env:GITHUB_OUTPUT -Value "result=success"
         } else {
-            $message = ""
-            try {
-                $errorJson = $response.Content | ConvertFrom-Json
-                $message = $errorJson.message
-            } catch { $message = "Failed to read error message." }
-            Add-Content -Path $env:GITHUB_OUTPUT -Value "result=failure"
-            Add-Content -Path $env:GITHUB_OUTPUT -Value "error-message=Failed to create repository: $message"
+			$errorMsg = "Error: Failed to create repository $Owner/$RepoName. HTTP Status: $($response.StatusCode)"
+			Add-Content -Path $env:GITHUB_OUTPUT -Value "result=failure"			
+            Add-Content -Path $env:GITHUB_OUTPUT -Value "error-message=$errorMsg"
+			Write-Host $errorMsg
         }
     } catch {
-        $errorMsg = ""
-        if ($_.Exception.Response -and $_.Exception.Response.GetResponseStream()) {
-            $reader = New-Object System.IO.StreamReader $_.Exception.Response.GetResponseStream()
-            $content = $reader.ReadToEnd()
-            $reader.Close()
-            try {
-                $errorJson = $content | ConvertFrom-Json
-                $errorMsg = $errorJson.message
-            } catch { $errorMsg = $content }
-        }
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "result=failure"
-        Add-Content -Path $env:GITHUB_OUTPUT -Value "error-message=Failed to create repository: $errorMsg"
+		$errorMsg = "Error: Failed to create repository $Owner/$RepoName. Exception: $($_.Exception.Message)"
+		Add-Content -Path $env:GITHUB_OUTPUT -Value "result=failure"
+		Add-Content -Path $env:GITHUB_OUTPUT -Value "error-message=$errorMsg"
+		Write-Host $errorMsg
     }
 }
