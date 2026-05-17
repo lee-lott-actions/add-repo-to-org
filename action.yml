@@ -35,4 +35,9 @@ runs:
       shell: pwsh
       run: |
         . "${{ github.action_path }}/action.ps1"
-        New-GitHubRepositoryFromTemplate "${{ inputs.repo-name }}" "${{ inputs.repo-description }}" "${{ inputs.template-repo }}" "${{ inputs.owner }}" "${{ inputs.token }}"
+        New-GitHubRepositoryFromTemplate `
+          -RepoName "${{ inputs.repo-name }}" `
+          -RepoDescription "${{ inputs.repo-description }}" `
+          -TemplateRepo "${{ inputs.template-repo }}" `
+          -Owner "${{ inputs.owner }}" `
+          -Token "${{ inputs.token }}"
