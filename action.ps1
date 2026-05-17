@@ -17,9 +17,7 @@ function New-GitHubRepositoryFromTemplate {
         Add-Content -Path $env:GITHUB_OUTPUT -Value "error-message=Missing required parameters: repo_name, repo_description, template_repo, owner, and token must be provided."
         Add-Content -Path $env:GITHUB_OUTPUT -Value "result=failure"
         return
-    }
-
-    Write-Host "Creating repository from template: $Owner/$TemplateRepo"
+    }   
 
     # Use MOCK_API if set, otherwise default to GitHub API
     $apiBaseUrl = $env:MOCK_API
@@ -33,7 +31,7 @@ function New-GitHubRepositoryFromTemplate {
         "Content-Type" = "application/json"
     }
 
-    $jsonBody = @{
+    $body = @{
         owner       = $Owner
         name        = $RepoName
         description = $RepoDescription
@@ -41,7 +39,8 @@ function New-GitHubRepositoryFromTemplate {
     } | ConvertTo-Json
 
     try {
-        $response = Invoke-WebRequest -Uri $uri -Headers $headers -Method Post -Body $jsonBody
+		Write-Host "Creating repository from template: $Owner/$TemplateRepo"
+        $response = Invoke-WebRequest -Uri $uri -Headers $headers -Method Post -Body $body -SkipHttpErrorCheck
 
         if ($response.StatusCode -eq 201) {
             Add-Content -Path $env:GITHUB_OUTPUT -Value "result=success"
